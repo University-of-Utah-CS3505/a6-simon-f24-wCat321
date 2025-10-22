@@ -19,5 +19,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    const std::string red_button_user_style = "QPushButton {background-color: darkred;} QPushButton::hover:!pressed {background-color: maroon;} QPushButton::pressed {background-color: red;}";
+    const std::string red_button_showcase_style = "QPushButton::disabled {background-color: red;}";
+    const std::string blue_button_user_style = "QPushButton {background-color: darkblue;} QPushButton::hover:!pressed {background-color: navy;} QPushButton::pressed {background-color: blue;} ";
+    const std::string blue_button_showcase_style = "QPushButton::disabled {background-color: blue;}";
 };
 #endif // MAINWINDOW_H
