@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::loadPattern(const QVector<bool>* pattern) {
     blinkPattern = pattern;
     index = 0;
-    gameSwap = ((blinkPattern->size() - Simon::initial_size) / game_swap_loop_timer ) % 2 == 1;
+    gameSwap = ((blinkPattern->size() - Simon::initial_size) / game_swap_loop_round_count ) % 2 == 1;
     lockButtons();
     stopBlink();
 }

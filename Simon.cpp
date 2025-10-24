@@ -30,10 +30,10 @@ void Simon::nextRound() {
     emit sendButtonPattern(pattern);
 }
 
-void Simon::getInput(bool button) {
+void Simon::getInput(bool inputPattern) {
     if (!pattern) return;
 
-    if (index < pattern->size() && pattern->at(index) == button) {
+    if (index < pattern->size() && pattern->at(index) == inputPattern) {
         index ++;
         if (index == pattern->size())
             nextRound();
