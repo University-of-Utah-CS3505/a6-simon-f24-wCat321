@@ -2,10 +2,7 @@
 #include <QRandomGenerator>
 
 
-Simon::Simon(QObject *parent) : QObject{parent} {
-
-
-}
+Simon::Simon(QObject *parent) : QObject{parent} {}
 
 void Simon::addToPattern() {
     bool value = QRandomGenerator::global()->bounded(2) == 0;
@@ -14,7 +11,7 @@ void Simon::addToPattern() {
 
 void Simon::startGame() {
     delete pattern;
-    pattern = new QVector<bool>();
+    pattern = new QVector<bool>(); // clears and resets pattern to be empty.
     index = 0;
 
     for (int i = 0; i < initial_size; i++) {
@@ -31,11 +28,11 @@ void Simon::nextRound() {
 }
 
 void Simon::getInput(bool inputPattern) {
-    if (!pattern) return;
+    if (!pattern) return; // nullchecking, shouldn't get ran.
 
-    if (index < pattern->size() && pattern->at(index) == inputPattern) {
+    if (index < pattern->size() && pattern->at(index) == inputPattern) { // check to ensure index isn't beyond pattern size and that the button press is equal to the current index value.
         index ++;
-        if (index == pattern->size())
+        if (index == pattern->size()) // if at the end of the pattern, go to next round.
             nextRound();
     } else emit endGame();
 }
