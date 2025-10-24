@@ -9,7 +9,12 @@ class Simon : public QObject {
 
 public:
     explicit Simon(QObject *parent = nullptr);
+
+public slots:
+    void getInput(bool button);
 };
+
+
 
 
 #endif // SIMON_H
