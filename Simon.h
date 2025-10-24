@@ -11,9 +11,11 @@ public:
     explicit Simon(QObject *parent = nullptr);
     ~Simon();
 
+    static const int initial_size = 3;
+
+
 private:
     QVector<bool>* pattern = nullptr;
-    const int initial_size = 3;
     int index = 0;
 
     void nextRound();
