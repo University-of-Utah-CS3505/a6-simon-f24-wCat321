@@ -21,32 +21,38 @@ public:
     ~MainWindow();
 
 private:
-    const QVector<bool> temp = {false, false, true, false, true};
+    const int blink_timer_time = 300;
+    const int delay_timer_time = 200;
 
+    const QString red_button_user_style = "QPushButton {background-color: darkred;} QPushButton::hover:!pressed {background-color: maroon;} QPushButton::pressed {background-color: red;}";
+    const QString red_button_showcase_style = "QPushButton::disabled {background-color: red;}";
+    const QString blue_button_user_style = "QPushButton {background-color: darkblue;} QPushButton::hover:!pressed {background-color: navy;} QPushButton::pressed {background-color: blue;} ";
+    const QString blue_button_showcase_style = "QPushButton::disabled {background-color: blue;} ";
+
+    const int end_game_blink_loop = 5;
+    const int end_game_blink_start = 300;
+    const int end_game_blink_stop = 300;
 
     Ui::MainWindow *ui;
     Simon *game;
-
     int index = 0;
     const QVector<bool>* blinkPattern = nullptr;
 
     QTimer* blinkTimer;
     QTimer* delayTimer;
-    const int blinkTimerTime = 300;
-    const int delayTimerTime = 200;
 
-    const QString red_button_user_style = "QPushButton {background-color: darkred;} QPushButton::hover:!pressed {background-color: maroon;} QPushButton::pressed {background-color: red;}";
-    const QString red_button_showcase_style = "QPushButton::disabled {background-color: red;}";
-    const QString blue_button_user_style = "QPushButton {background-color: darkblue;} QPushButton::hover:!pressed {background-color: navy;} QPushButton::pressed {background-color: blue;} ";
-    const QString blue_button_showcase_style = "QPushButton::disabled {background-color: blue;}";
+    void displayBlink(const bool button);
+    void displayBlinkStop();
 
+    void lockButtons();
     void releaseButtons();
 
 public slots:
-    void startBlink(const QVector<bool>* pattern);
+    void loadPattern(const QVector<bool>* pattern);
 
 private slots:
-    void nextBlink();
-    void endBlink();
+    void startBlink();
+    void stopBlink();
+    void endGameBlink();
 };
 #endif // MAINWINDOW_H

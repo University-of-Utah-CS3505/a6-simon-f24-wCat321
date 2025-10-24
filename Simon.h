@@ -9,9 +9,22 @@ class Simon : public QObject {
 
 public:
     explicit Simon(QObject *parent = nullptr);
+    ~Simon();
 
+private:
+    QVector<bool>* pattern = nullptr;
+    const int initial_size = 3;
+    int index = 0;
+
+    void nextRound();
+    void addToPattern();
 public slots:
+    void startGame();
     void getInput(bool button);
+
+signals:
+    void sendButtonPattern(const QVector<bool>* pattern);
+    void endGame();
 };
 
 
