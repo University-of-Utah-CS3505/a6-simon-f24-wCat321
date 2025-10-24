@@ -35,7 +35,7 @@ void MainWindow::loadPattern(const QVector<bool>* pattern) {
 }
 
 void MainWindow::displayBlink(const bool button) {
-    if (gameSwap) {
+    if (gameSwap) { // gameSwap swaps the position of the red and blue buttons. It does this through modifying the style sheet
         if (button)
             ui->buttonRed->setStyleSheet(blue_button_showcase_style);
         else
@@ -86,15 +86,15 @@ void MainWindow::endGameBlink() {
     gameSwap = false;
 
     for (int i = 0; i < end_game_blink_loop; i++) {\
-        int start = i * (end_game_blink_start + end_game_blink_stop);
+        int start = i * (end_game_blink_start + end_game_blink_stop); // calculates offset based on the number of iterations
         int stop = start + end_game_blink_stop;
 
         QTimer::singleShot(start, this, [this]() {displayBlink(false); displayBlink(true);});
         QTimer::singleShot(stop, this, [this]() {displayBlinkStop();});
     }
 
-    int end = end_game_blink_loop * (end_game_blink_start + end_game_blink_stop);
-    QTimer::singleShot(end, this, [this]() {ui->buttonStart->setEnabled(true);});
+    int end = end_game_blink_loop * (end_game_blink_start + end_game_blink_stop); // calculates the time spent after everything in the for loop.
+    QTimer::singleShot(end, this, [this]() {ui->buttonStart->setEnabled(true);}); // reenable the start button to play again.
 }
 
 void MainWindow::lockButtons() {
