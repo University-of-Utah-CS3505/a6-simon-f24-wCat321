@@ -55,7 +55,13 @@ private:
 
     // current index of the blink pattern being displayed.
     int index = 0;
-    // boolean deciding if the "game swap" visual is happening.
+    /**
+     * @brief boolean deciding if the "game swap" visual is happening.
+     * Game swap is a mechanic where the buttons and button inputs swap, so
+     * the left button goes from red to blue. Game swap also swaps the inputs,
+     * so the "red" button will always flash when its a red button from the
+     * game, but the position of the red button changes.
+     */
     bool gameSwap = false;
 
     // ui.

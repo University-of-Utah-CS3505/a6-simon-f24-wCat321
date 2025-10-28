@@ -16,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(blinkTimer, &QTimer::timeout, this, &MainWindow::stopBlink);
     connect(delayTimer, &QTimer::timeout, this, &MainWindow::startBlink);
 
-    connect(ui->buttonBlue, &QPushButton::released, this, [this]() {game->getInput(true ^ gameSwap);}); // true XOR gameSwap : true unless gameSwap, then false
-    connect(ui->buttonRed, &QPushButton::released, this, [this]() {game->getInput(false ^ gameSwap);}); // false XOR gameSwap : false unless gameSwap, then true
+    connect(ui->buttonLeft, &QPushButton::released, this, [this]() {game->getInput(true ^ gameSwap);}); // true XOR gameSwap : true unless gameSwap, then false
+    connect(ui->buttonRight, &QPushButton::released, this, [this]() {game->getInput(false ^ gameSwap);}); // false XOR gameSwap : false unless gameSwap, then true
     connect(ui->buttonStart, &QPushButton::pressed, this, [this]() {ui->buttonStart->setEnabled(false); game->startGame();});
 
     connect(game, &Simon::sendButtonPattern, this, &MainWindow::loadPattern);
@@ -29,7 +29,13 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::loadPattern(const QVector<bool>* pattern) {
     blinkPattern = pattern;
     index = 0;
-    gameSwap = ((blinkPattern->size() - Simon::initial_size) / game_swap_loop_round_count ) % 2 == 1;
+
+    gameSwap = // Check the new pattern size to see if it makes it time for a game swap.
+            (blinkPattern->size() - Simon::initial_size) // current size - initial size = number of rounds.
+            / game_swap_loop_round_count // int division by round count to decide how many rounds between swaps
+            % 2 == 1; // if even, it's starting mode, if odd it's "swapped" mode.
+    // IE: every "game_swap_loop_round_count" number of rounds, the buttons will swap.
+
     lockButtons();
     stopBlink();
 }
@@ -37,26 +43,26 @@ void MainWindow::loadPattern(const QVector<bool>* pattern) {
 void MainWindow::displayBlink(const bool button) {
     if (gameSwap) { // gameSwap swaps the position of the red and blue buttons. It does this through modifying the style sheet
         if (button)
-            ui->buttonRed->setStyleSheet(blue_button_showcase_style);
+            ui->buttonRight->setStyleSheet(blue_button_showcase_style);
         else
-            ui->buttonBlue->setStyleSheet(red_button_showcase_style);
+            ui->buttonLeft->setStyleSheet(red_button_showcase_style);
     }
     else {
         if (button)
-            ui->buttonBlue->setStyleSheet(blue_button_showcase_style);
+            ui->buttonLeft->setStyleSheet(blue_button_showcase_style);
         else
-            ui->buttonRed->setStyleSheet(red_button_showcase_style);
+            ui->buttonRight->setStyleSheet(red_button_showcase_style);
 
     }
 }
 
 void MainWindow::displayBlinkStop() {
     if (gameSwap) {
-        ui->buttonBlue->setStyleSheet(red_button_user_style);
-        ui->buttonRed->setStyleSheet(blue_button_user_style);
+        ui->buttonLeft->setStyleSheet(red_button_user_style);
+        ui->buttonRight->setStyleSheet(blue_button_user_style);
     } else {
-        ui->buttonBlue->setStyleSheet(blue_button_user_style);
-        ui->buttonRed->setStyleSheet(red_button_user_style);
+        ui->buttonLeft->setStyleSheet(blue_button_user_style);
+        ui->buttonRight->setStyleSheet(red_button_user_style);
     }
 }
 
@@ -98,13 +104,13 @@ void MainWindow::endGameBlink() {
 }
 
 void MainWindow::lockButtons() {
-    ui->buttonRed->setEnabled(false);
-    ui->buttonBlue->setEnabled(false);
+    ui->buttonRight->setEnabled(false);
+    ui->buttonLeft->setEnabled(false);
 }
 
 void MainWindow::releaseButtons() {
-    ui->buttonRed->setEnabled(true);
-    ui->buttonBlue->setEnabled(true);
+    ui->buttonRight->setEnabled(true);
+    ui->buttonLeft->setEnabled(true);
 }
 
 MainWindow::~MainWindow()
