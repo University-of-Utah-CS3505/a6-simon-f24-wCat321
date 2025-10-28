@@ -89,6 +89,12 @@ private:
      */
     void displayBlinkStop();
     /**
+     * @brief Sends a signal that the button was pressed, and updates the
+     * progress counter.
+     * @param pressedButton | button value that was pressed.
+     */
+    void pressButton(const bool pressedButton);
+    /**
      * @brief locks the red and blue buttons, setting them to disabled.
      */
     void lockButtons();

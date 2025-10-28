@@ -16,12 +16,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(blinkTimer, &QTimer::timeout, this, &MainWindow::stopBlink);
     connect(delayTimer, &QTimer::timeout, this, &MainWindow::startBlink);
 
-    connect(ui->buttonLeft, &QPushButton::released, this, [this]() {game->getInput(true ^ gameSwap);}); // true XOR gameSwap : true unless gameSwap, then false
-    connect(ui->buttonRight, &QPushButton::released, this, [this]() {game->getInput(false ^ gameSwap);}); // false XOR gameSwap : false unless gameSwap, then true
-    connect(ui->buttonStart, &QPushButton::pressed, this, [this]() {ui->buttonStart->setEnabled(false); game->startGame();});
+    connect(ui->buttonLeft, &QPushButton::released, this, [this]() {pressButton(true ^ gameSwap);}); // true XOR gameSwap : true unless gameSwap, then false
+    connect(ui->buttonRight, &QPushButton::released, this, [this]() {pressButton(false ^ gameSwap);}); // false XOR gameSwap : false unless gameSwap, then true
+
+    connect(ui->buttonStart, &QPushButton::pressed, this, [this]() {ui->buttonStart->setEnabled(false); ui->progressBar->setVisible(false); game->startGame();});
 
     connect(game, &Simon::sendButtonPattern, this, &MainWindow::loadPattern);
     connect(game, &Simon::endGame, this, &MainWindow::endGameBlink);
+
+    ui->progressBar->setVisible(false);
 
     lockButtons();
 }
@@ -29,12 +32,15 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::loadPattern(const QVector<bool>* pattern) {
     blinkPattern = pattern;
     index = 0;
+    ui->progressBar->setValue(blinkPattern->size() - 1);
 
     gameSwap = // Check the new pattern size to see if it makes it time for a game swap.
             (blinkPattern->size() - Simon::initial_size) // current size - initial size = number of rounds.
             / game_swap_loop_round_count // int division by round count to decide how many rounds between swaps
             % 2 == 1; // if even, it's starting mode, if odd it's "swapped" mode.
     // IE: every "game_swap_loop_round_count" number of rounds, the buttons will swap.
+
+    ui->progressBar->setInvertedAppearance(gameSwap);
 
     lockButtons();
     stopBlink();
@@ -91,6 +97,8 @@ void MainWindow::endGameBlink() {
     lockButtons();
     gameSwap = false;
 
+    ui->progressBar->setVisible(false);
+
     for (int i = 0; i < end_game_blink_loop; i++) {\
         int start = i * (end_game_blink_start + end_game_blink_stop); // calculates offset based on the number of iterations
         int stop = start + end_game_blink_stop;
@@ -103,14 +111,22 @@ void MainWindow::endGameBlink() {
     QTimer::singleShot(end, this, [this]() {ui->buttonStart->setEnabled(true);}); // reenable the start button to play again.
 }
 
+void MainWindow::pressButton(const bool pressedButton) {
+    ui->progressBar->setValue(ui->progressBar->value() + 1);
+    game->getInput(pressedButton);
+}
+
 void MainWindow::lockButtons() {
     ui->buttonRight->setEnabled(false);
     ui->buttonLeft->setEnabled(false);
 }
 
 void MainWindow::releaseButtons() {
+    ui->progressBar->setVisible(true);
     ui->buttonRight->setEnabled(true);
     ui->buttonLeft->setEnabled(true);
+    ui->progressBar->setValue(0);
+    ui->progressBar->setMaximum(blinkPattern->size());
 }
 
 MainWindow::~MainWindow()
